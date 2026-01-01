@@ -1,7 +1,10 @@
+#ifndef test
+#define test
+
 #include <iostream>
 #include <asio.hpp>
 
-int main()
+void dsfsdfsdf()
 {
   asio::io_context io;
 
@@ -9,6 +12,6 @@ int main()
   t.wait();
 
   std::cout << "Hello, world!" << std::endl;
-
-  return 0;
 }
+
+#endif
