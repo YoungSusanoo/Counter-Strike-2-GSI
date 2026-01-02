@@ -1,8 +1,9 @@
 #include <iostream>
 
-#include <cs2gsi/test.hpp>
+#include <cs2gsi/server.hpp>
 
 int main()
 {
-  dsfsdfsdf();
+  cs2gsi::Server server("127.0.0.1", 3000);
+  server.start();
 }
