@@ -45,7 +45,7 @@ void cs2gsi::HttpParser::clear()
 
 bool cs2gsi::HttpParser::parse_method(char c)
 {
-  if (c == ' ' && c == '\t')
+  if (c == ' ' || c == '\t')
   {
     parser_ = &cs2gsi::HttpParser::skip_spaces< &cs2gsi::HttpParser::parse_path >;
     return (this->*parser_)(c);
@@ -56,7 +56,7 @@ bool cs2gsi::HttpParser::parse_method(char c)
 
 bool cs2gsi::HttpParser::parse_path(char c)
 {
-  if (c == ' ' && c == '\t')
+  if (c == ' ' || c == '\t')
   {
     parser_ = &cs2gsi::HttpParser::skip_spaces< &cs2gsi::HttpParser::parse_version >;
     return (this->*parser_)(c);
@@ -86,8 +86,7 @@ bool cs2gsi::HttpParser::parse_header_name(char c)
   }
   else
   {
-    header_value_.push_back(c);
-    return (this->*parser_)(c);
+    header_name_.push_back(c);
   }
   return false;
 }
@@ -101,7 +100,6 @@ bool cs2gsi::HttpParser::parse_header_value(char c)
   else
   {
     header_value_.push_back(c);
-    return (this->*parser_)(c);
   }
   return false;
 }
@@ -118,29 +116,26 @@ bool cs2gsi::HttpParser::parse_body(char c)
 
 bool cs2gsi::HttpParser::finalize_parse()
 {
-  if (headers_.empty())
+  if (!header_name_.empty())
   {
-    return false;
+    headers_.emplace(header_name_, header_value_);
+    header_name_.clear();
+    header_value_.clear();
   }
-  if (header_name_.empty())
+  else if (!headers_.empty())
   {
-    if (headers_.contains("Content-Length"))
+    if (headers_.contains("Content-Length") && body_.empty())
     {
       content_length_ = std::stoull(headers_["Content-Length"]);
       parser_ = &cs2gsi::HttpParser::parse_body;
+      return false;
     }
     else
     {
       return true;
     }
   }
-  else
-  {
-    headers_.emplace(header_name_, header_value_);
-    header_name_.clear();
-    header_value_.clear();
-    parser_ = &cs2gsi::HttpParser::parse_header_name;
-  }
+  parser_ = &cs2gsi::HttpParser::parse_header_name;
   return false;
   // sanitize returning
 }
@@ -151,7 +146,7 @@ bool cs2gsi::HttpParser::skip_spaces(char c)
   if (c != ' ' && c != '\t')
   {
     parser_ = next;
-    return (this->*next)(c);
+    return (this->*parser_)(c);
   }
   return false;
 }
@@ -159,6 +154,8 @@ bool cs2gsi::HttpParser::skip_spaces(char c)
 bool cs2gsi::HttpParser::parse_newline(char c)
 {
   if (c == '\n')
-  {}
+  {
+    return finalize_parse();
+  }
   return false;
 }
