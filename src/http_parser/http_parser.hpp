@@ -46,7 +46,7 @@ namespace cs2gsi
     bool parse_newline(char c);
     bool parse_method(char c);
     bool parse_path(char c);
-    bool parse_versiov(char c);
+    bool parse_version(char c);
     bool parse_header_name(char c);
     bool parse_header_separator(char c);
     bool parse_header_value(char c);
