@@ -12,9 +12,9 @@ target("cs2-gsi")
   set_kind("static")
   set_languages("c++23")
   add_includedirs("include", { public = true, prefix = "cs2gsi" })
-  add_includedirs("src", { public = false })
+  add_includedirs("src", { private = true })
   add_files("src/*.cpp")
-  add_files("src/http_parser/*.cpp")
+  add_files("src/**/*.cpp")
   add_packages("asio", {public = true})
 
 if has_config("test") then 
