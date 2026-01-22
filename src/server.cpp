@@ -8,7 +8,8 @@
 cs2gsi::Server::Server(std::string_view address, short unsigned int port):
   context_ {},
   endpoint_ { asio::ip::make_address(address), port },
-  acceptor_ { context_, endpoint_ }
+  acceptor_ { context_, endpoint_ },
+  socket_ { context_ }
 {
   accept();
 }
@@ -23,10 +24,9 @@ void cs2gsi::Server::start()
 
 void cs2gsi::Server::accept()
 {
-  asio::ip::tcp::socket socket { context_ };
-  acceptor_.async_accept(socket,
-                         [&socket](std::error_code e)
+  acceptor_.async_accept(socket_,
+                         [this](std::error_code e)
                          {
-                           std::make_shared< Session >(std::move(socket))->start();
+                           std::make_shared< Session >(std::move(socket_))->start();
                          });
 }

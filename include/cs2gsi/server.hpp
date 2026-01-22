@@ -18,7 +18,8 @@ namespace cs2gsi
     asio::io_context context_;
     asio::ip::tcp::endpoint endpoint_;
     asio::ip::tcp::acceptor acceptor_;
-
+    asio::ip::tcp::socket socket_;
+    
     void accept();
     void read();
   };
