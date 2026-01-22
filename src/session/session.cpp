@@ -32,6 +32,5 @@ void cs2gsi::Session::read(std::error_code ec, std::size_t n)
   else
   {
     parser_.clear();
-    start();
   };
 }
