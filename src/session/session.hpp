@@ -13,10 +13,10 @@ namespace cs2gsi
   public:
     Session(asio::ip::tcp::socket&& socket);
 
-    void start();
+    void read();
 
   private:
-    void read(std::error_code ec, std::size_t n);
+    void on_read(std::error_code ec, std::size_t n);
     HttpParser parser_;
     asio::ip::tcp::socket socket_;
     std::array< char, 8192 > buffer_;

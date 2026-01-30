@@ -6,14 +6,14 @@ cs2gsi::Session::Session(asio::ip::tcp::socket&& socket):
   socket_ { std::move(socket) }
 {}
 
-void cs2gsi::Session::start()
+void cs2gsi::Session::read()
 {
   using namespace std::placeholders;
   auto binded_read = std::bind(&cs2gsi::Session::read, shared_from_this(), _1, _2);
   socket_.async_read_some(asio::buffer(buffer_), binded_read);
 }
 
-void cs2gsi::Session::read(std::error_code ec, std::size_t n)
+void cs2gsi::Session::on_read(std::error_code ec, std::size_t n)
 {
   if (!ec)
   {
@@ -27,7 +27,7 @@ void cs2gsi::Session::read(std::error_code ec, std::size_t n)
         parser_.clear();
       }
     }
-    start();
+    read();
   }
   else
   {
