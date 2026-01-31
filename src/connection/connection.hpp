@@ -8,6 +8,11 @@
 
 namespace cs2gsi
 {
+  namespace detail
+  {
+    constexpr std::size_t buffer_size = 512;
+  };
+
   template< class T >
   concept ProtocolReader = 
     requires(T a, std::span< char > buffer) 
@@ -28,14 +33,15 @@ namespace cs2gsi
 
     Reader reader_;
     asio::ip::tcp::socket socket_;
-    std::array< char, 8192 > buffer_;
+    std::vector< char > buffer_;
   };
 }
 
 template< cs2gsi::ProtocolReader Reader >
 cs2gsi::Connection< Reader >::Connection(asio::ip::tcp::socket&& socket):
   reader_ {},
-  socket_ { std::move(socket) }
+  socket_ { std::move(socket) },
+  buffer_ (detail::buffer_size)
 {}
 
 template< cs2gsi::ProtocolReader Reader >
@@ -56,6 +62,10 @@ void cs2gsi::Connection< Reader >::on_read(std::error_code ec, std::size_t n)
       reader_.read(buffer_);
     }
     read();
+  }
+  else
+  {
+    std::cout << ec.message();
   }
 }
 
