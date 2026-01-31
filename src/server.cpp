@@ -3,7 +3,8 @@
 #include <iostream>
 
 #include <http_parser/http_parser.hpp>
-#include <session/session.hpp>
+#include <connection/connection.hpp>
+#include <gsiSession/gsiSession.hpp>
 
 cs2gsi::Server::Server(std::string_view address, short unsigned int port):
   context_ {},
@@ -27,6 +28,6 @@ void cs2gsi::Server::accept()
   acceptor_.async_accept(socket_,
                          [this](std::error_code e)
                          {
-                           std::make_shared< Session >(std::move(socket_))->start();
+                           std::make_shared< Connection< GsiSession > >(std::move(socket_))->read();
                          });
 }
