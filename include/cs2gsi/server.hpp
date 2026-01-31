@@ -10,7 +10,7 @@ namespace cs2gsi
   struct Server
   {
     Server(std::string_view address, short unsigned int port);
-    ~Server();
+
     void start();
     void stop();
 

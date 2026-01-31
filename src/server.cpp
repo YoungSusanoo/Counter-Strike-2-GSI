@@ -15,9 +15,6 @@ cs2gsi::Server::Server(std::string_view address, short unsigned int port):
   accept();
 }
 
-cs2gsi::Server::~Server()
-{}
-
 void cs2gsi::Server::start()
 {
   context_.run();
