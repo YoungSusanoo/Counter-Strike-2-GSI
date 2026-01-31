@@ -33,7 +33,7 @@ namespace cs2gsi
 
     Reader reader_;
     asio::ip::tcp::socket socket_;
-    std::vector< char > buffer_;
+    std::array< char, detail::buffer_size > buffer_;
   };
 }
 
@@ -41,7 +41,7 @@ template< cs2gsi::ProtocolReader Reader >
 cs2gsi::Connection< Reader >::Connection(asio::ip::tcp::socket&& socket):
   reader_ {},
   socket_ { std::move(socket) },
-  buffer_ (detail::buffer_size)
+  buffer_ {}
 {}
 
 template< cs2gsi::ProtocolReader Reader >
